@@ -59,7 +59,7 @@
     <name>Favicon Manager</name>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <description>This is the custom module (Favicon Manager) for running on a Jahia server.</description>
+    <description>Module to set custom favicons per site</description>
 
     <repositories>
         <repository>

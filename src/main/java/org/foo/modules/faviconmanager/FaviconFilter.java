@@ -16,7 +16,7 @@ import java.io.IOException;
 @Component(immediate = true, service = AbstractServletFilter.class)
 public class FaviconFilter extends AbstractServletFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(FaviconFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(FaviconFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) {
@@ -35,23 +35,27 @@ public class FaviconFilter extends AbstractServletFilter {
         String requestURI = httpRequest.getRequestURI();
 
         if (requestURI.endsWith("/favicon.ico")) {
-            try {
-                String siteKey = ServerNameToSiteMapper.getSiteKeyByServerName(httpRequest);
-                logger.info("Site key: {}", siteKey);
-                JCRNodeWrapper siteNode = (JCRNodeWrapper) JahiaSitesService.getInstance().getSiteByKey(siteKey);
-
-                if (siteNode != null && siteNode.isNodeType("jmix:favicon") && siteNode.hasProperty("favicon")) {
-                    JCRNodeWrapper faviconNode = (JCRNodeWrapper) siteNode.getProperty("favicon").getNode();
-                    logger.info("Favicon node path: {}", faviconNode.getPath());
-                    request.setAttribute("faviconPath", faviconNode.getPath());
-                } else {
-                    logger.debug("No favicon found for site {}", siteKey);
-                }
-            } catch (Exception e) {
-                logger.error("Error getting favicon", e);
-            }
+            handleFaviconRequest(httpRequest);
         }
         chain.doFilter(request, response);
+    }
+
+    private void handleFaviconRequest(HttpServletRequest request) {
+        try {
+            String siteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
+            logger.debug("Site key: {}", siteKey);
+            JCRNodeWrapper siteNode = (JCRNodeWrapper) JahiaSitesService.getInstance().getSiteByKey(siteKey);
+
+            if (siteNode != null && siteNode.isNodeType("jmix:favicon") && siteNode.hasProperty("favicon")) {
+                JCRNodeWrapper faviconNode = (JCRNodeWrapper) siteNode.getProperty("favicon").getNode();
+                logger.debug("Favicon node path: {}", faviconNode.getPath());
+                request.setAttribute("faviconPath", faviconNode.getPath());
+            } else {
+                logger.debug("No favicon found for site {}", siteKey);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting favicon", e);
+        }
     }
 
     @Override
