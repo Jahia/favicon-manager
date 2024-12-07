@@ -61,11 +61,10 @@
         <jahia.plugin.version>6.8</jahia.plugin.version>
     </properties>
 
-
     <scm>
-        <url>https://github.com/goonerish/favicon-manager</url>
-        <connection>scm:git:git@github.com:goonerish/favicon-manager.git</connection>
-        <developerConnection>scm:git:git@github.com:goonerish/favicon-manager.git</developerConnection>
+        <url>https://github.com/Jahia/favicon-manager</url>
+        <connection>scm:git:git@github.com:Jahia/favicon-manager.git</connection>
+        <developerConnection>scm:git:git@github.com:Jahia/favicon-manager.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
