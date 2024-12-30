@@ -54,7 +54,7 @@
     <groupId>org.jahia.community</groupId>
     <artifactId>favicon-manager</artifactId>
     <name>Favicon Manager</name>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>bundle</packaging>
     <description>This is the custom module (Favicon Manager) for running on a Jahia server.</description>
     <properties>
@@ -65,7 +65,7 @@
         <url>https://github.com/Jahia/favicon-manager</url>
         <connection>scm:git:git@github.com:Jahia/favicon-manager.git</connection>
         <developerConnection>scm:git:git@github.com:Jahia/favicon-manager.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>favicon-manager-1.0.1</tag>
     </scm>
 
     <repositories>
