@@ -10,16 +10,3 @@ nyc_output
 results/
 run-artifacts
 .yarn/
-
-# Maven build output
-target/
-
-# Local CI run output
-cypress-result.txt
-
-# Local tooling
-.claude/
-.vscode/
-
-# OS junk
-.DS_Store

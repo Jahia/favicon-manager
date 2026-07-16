@@ -1,0 +1,14 @@
+query GetSiteFavicon($siteNodePath: String!) {
+    jcr {
+        nodeByPath(path: $siteNodePath) {
+            mixinTypes {
+                name
+            }
+            property(name: "favicon") {
+                refNode {
+                    path
+                }
+            }
+        }
+    }
+}

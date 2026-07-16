@@ -4,7 +4,7 @@
 Favicon Manager is a Jahia module that allows you to manage favicons for different sites. It includes a servlet filter to dynamically serve favicons based on the site mapped to that domain.
 
 ### Prerequisites
-- Jahia 8.1.6 or higher
+- Jahia 8.2 or higher
 
 ### Installation
 - In Jahia, install the module from module management page, or by uploading the jar file.
@@ -14,3 +14,10 @@ Favicon Manager is a Jahia module that allows you to manage favicons for differe
 - Enable the module on the site(s) where you want to use it.
 - Edit the site node, enable the mixin option `Add Site Favicon`, and upload the favicon image.
 - Publish the image.
+
+### Testing
+
+End-to-end tests (Docker-based Jahia + Cypress) live under [`tests/`](tests/README.md).
+
+## License
+This project is licensed under the terms of the [MIT license](LICENSE.md).
