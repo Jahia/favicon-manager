@@ -55,22 +55,23 @@ public class FaviconFilter extends AbstractServletFilter {
     }
 
     private void handleFaviconRequest(HttpServletRequest request) {
-        String serverName = request.getServerName();
+        String serverName = null;
 
         try {
+            serverName = request.getServerName();
             String siteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
             if (siteKey == null) {
                 logger.debug("No site mapped for server name: {}", serverName);
                 return;
             }
             logger.debug("Site key resolved for {}: {}", serverName, siteKey);
-            resolveFaviconPath(siteKey).ifPresentOrElse(
-                    faviconPath -> {
-                        logger.debug("Favicon path for site {}: {}", siteKey, faviconPath);
-                        request.setAttribute(FAVICON_PATH_ATTRIBUTE, faviconPath);
-                    },
-                    () -> logger.debug("No favicon configured for site {}", siteKey)
-            );
+            Optional<String> faviconPath = resolveFaviconPath(siteKey);
+            if (faviconPath.isPresent()) {
+                logger.debug("Favicon path for site {}: {}", siteKey, faviconPath.get());
+                request.setAttribute(FAVICON_PATH_ATTRIBUTE, faviconPath.get());
+            } else {
+                logger.debug("No favicon configured for site {}", siteKey);
+            }
             // Checked exceptions come from the JCR API; RuntimeException is caught too so an
             // unexpected failure (e.g. from the injected OSGi service) never breaks the filter chain.
         } catch (RepositoryException | JahiaException | RuntimeException e) {
@@ -80,7 +81,12 @@ public class FaviconFilter extends AbstractServletFilter {
 
     Optional<String> resolveFaviconPath(String siteKey) throws RepositoryException, JahiaException {
         Object site = jahiaSitesService.getSiteByKey(siteKey);
+        if (site == null) {
+            logger.warn("No site found for key {}; the server-name-to-site mapping may be stale", siteKey);
+            return Optional.empty();
+        }
         if (!(site instanceof JCRNodeWrapper)) {
+            logger.warn("Site {} was resolved but is not a JCRNodeWrapper ({})", siteKey, site.getClass());
             return Optional.empty();
         }
 

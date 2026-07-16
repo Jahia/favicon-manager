@@ -10,15 +10,8 @@
  *  6. Unknown domain – no 5xx when the Host maps to no known site
  */
 
-import {
-    addMixins,
-    createSite,
-    deleteSite,
-    getNodeByPath,
-    removeMixins,
-    uploadFile,
-    publishAndWaitJobEnding
-} from '@jahia/cypress';
+import {createSite, deleteSite, removeMixins, uploadFile, publishAndWaitJobEnding} from '@jahia/cypress';
+import {configureFavicon, restoreFavicon, faviconRequest} from '../support/favicon-helpers';
 
 // ─── Test-site constants ──────────────────────────────────────────────────────
 
@@ -42,61 +35,6 @@ const SITE_B = {
 
 const hasFaviconMixin = (mixinTypes: {name: string}[]): boolean =>
     mixinTypes.some(m => m.name === 'jmix:favicon');
-
-// ─── Cypress command helpers ──────────────────────────────────────────────────
-
-/**
- * Uploads a PNG fixture to a site's /files folder, adds the jmix:favicon mixin
- * to the site root node, sets the favicon weak-reference property, then publishes.
- * Intended for initial setup only — if the file already exists, use restoreFavicon instead.
- */
-const configureFavicon = (siteKey: string, fixtureRelPath: string, fileName: string): void => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    uploadFile(fixtureRelPath, `/sites/${siteKey}/files`, fileName, 'image/png').then((resp: any) => {
-        const uuid: string = resp.data.jcr.addNode.uuid;
-        addMixins(`/sites/${siteKey}`, ['jmix:favicon']);
-        cy.apollo({
-            mutationFile: 'graphql/mutation/setFaviconProperty.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, faviconUUID: uuid}
-        });
-        publishAndWaitJobEnding(`/sites/${siteKey}`);
-    });
-};
-
-/**
- * Restores a site's favicon to an already-uploaded file without re-uploading.
- * Looks up the existing file node's UUID, re-asserts jmix:favicon mixin
- * (safe to call even if mixin is present), and re-points the reference property.
- * Use this in after() hooks to avoid duplicate-node errors.
- */
-const restoreFavicon = (siteKey: string, existingFilePath: string): void => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getNodeByPath(existingFilePath).then((resp: any) => {
-        const uuid: string = resp.data.jcr.nodeByPath.uuid;
-        addMixins(`/sites/${siteKey}`, ['jmix:favicon']);
-        cy.apollo({
-            mutationFile: 'graphql/mutation/setFaviconProperty.graphql',
-            variables: {sitePath: `/sites/${siteKey}`, faviconUUID: uuid}
-        });
-        publishAndWaitJobEnding(`/sites/${siteKey}`);
-    });
-};
-
-/**
- * Issues a GET /favicon.ico to the Jahia instance with a custom Host header,
- * simulating a browser visiting that virtual domain.
- */
-const faviconRequest = (serverName: string): Cypress.Chainable<Cypress.Response<string>> => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const jahiaUrl: string = (Cypress as any).env('JAHIA_URL') || 'http://jahia:8080';
-    return cy.request<string>({
-        method: 'GET',
-        url: `${jahiaUrl}/favicon.ico`,
-        headers: {Host: serverName},
-        failOnStatusCode: false,
-        encoding: 'base64' // Receive binary as a comparable base64 string
-    });
-};
 
 // ─── Test suite ───────────────────────────────────────────────────────────────
 
@@ -184,7 +122,7 @@ describe('Favicon Manager', () => {
 
         it('should not crash (no 5xx) for an unknown domain', () => {
             faviconRequest('totally-unknown-host-99999.test').then(resp => {
-                expect(resp.status, 'no server error').to.not.be.oneOf([500, 503]);
+                expect(resp.status, 'no server error').to.be.lessThan(500);
             });
         });
     });
@@ -246,7 +184,7 @@ describe('Favicon Manager', () => {
             publishAndWaitJobEnding(`/sites/${SITE_B.key}`);
 
             faviconRequest(SITE_B.serverName).then(resp => {
-                expect(resp.status, 'no server error after mixin removal').to.not.be.oneOf([500, 503]);
+                expect(resp.status, 'no server error after mixin removal').to.be.lessThan(500);
             });
         });
 
@@ -259,9 +197,9 @@ describe('Favicon Manager', () => {
                 configuredFavicon = f as string;
             });
             faviconRequest(SITE_B.serverName).then(resp => {
-                if (resp.body && resp.body.length > 0) {
-                    expect(resp.body, 'site-specific favicon is no longer served').to.not.equal(configuredFavicon);
-                }
+                // Asserted unconditionally: an empty body is trivially "not equal" to the
+                // configured favicon's bytes too, so this must never be skipped.
+                expect(resp.body, 'site-specific favicon is no longer served').to.not.equal(configuredFavicon);
             });
         });
     });

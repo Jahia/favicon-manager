@@ -66,7 +66,6 @@ Cypress.Commands.add('logAllCookies', () => {
     cy.getCookies().then(cookies => {
         if (cookies.length === 0) {
             cy.log('No cookies found');
-            cy.log('No cookies found');
             return;
         }
 
