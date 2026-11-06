@@ -4,3 +4,15 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      maven-dependencies:
+        patterns:
+          - "*"
+    ignore:
+      # Jahia parent / platform artifacts define the target Jahia version
+      - dependency-name: "org.jahia.*"
+      # OSGi spec artifacts change Require-Capability/Import-Package ranges (Jahia 8.2 = DS 1.4)
+      - dependency-name: "org.osgi:*"
+      # frontend-maven-plugin 2.x requires a Java 17 Maven runtime
+      - dependency-name: "com.github.eirslett:frontend-maven-plugin"
+        update-types: ["version-update:semver-major"]
