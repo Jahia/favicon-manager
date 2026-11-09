@@ -49,16 +49,17 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>8.1.6.0</version>
+        <version>8.2.0.0</version>
     </parent>
     <groupId>org.jahia.community</groupId>
     <artifactId>favicon-manager</artifactId>
     <name>Favicon Manager</name>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>bundle</packaging>
-    <description>This is the custom module (Favicon Manager) for running on a Jahia server.</description>
+    <description>Allows administrators to configure a per-site favicon on a Jahia environment with multiple sites.</description>
     <properties>
-        <jahia.plugin.version>6.10</jahia.plugin.version>
+        <jahia.plugin.version>6.13</jahia.plugin.version>
+        <maven.compiler.release>11</maven.compiler.release>
     </properties>
 
     <scm>
@@ -70,7 +71,7 @@
 
     <repositories>
         <repository>
-            <id>jahia-public</id>
+            <id>jahia-public</id>   
             <name>Jahia Public Repository</name>
             <url>https://devtools.jahia.com/nexus/content/groups/public</url>
             <releases>
@@ -82,6 +83,27 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.14.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

@@ -1,0 +1,9 @@
+mutation SetFaviconProperty($sitePath: String!, $faviconUUID: String!) {
+    jcr(workspace: EDIT) {
+        mutateNode(pathOrId: $sitePath) {
+            mutateProperty(name: "favicon") {
+                setValue(type: WEAKREFERENCE, value: $faviconUUID)
+            }
+        }
+    }
+}

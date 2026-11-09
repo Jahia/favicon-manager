@@ -1,0 +1,5 @@
+- addMavenRepository: 'https://devtools.jahia.com/nexus/content/groups/public/@id=Public'
+- installBundle: 'file:///var/jahia/deploy/favicon-manager-1.1.0-SNAPSHOT.jar'
+  autoStart: true
+  uninstallPreviousVersion: true
+- include: 'provisioning.yml'

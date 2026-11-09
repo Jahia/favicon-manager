@@ -1,0 +1,5 @@
+- addMavenRepository: 'https://devtools.jahia.com/nexus/content/groups/public/@id=Public'
+- installBundle: 'mvn:org.jahia.community/favicon-manager/LATEST'
+  autoStart: true
+  uninstallPreviousVersion: true
+- include: 'provisioning.yml'

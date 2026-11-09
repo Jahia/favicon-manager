@@ -1,15 +1,25 @@
-# Eclipse
-/.classpath
-/.project
-/.settings
+artifacts
+build-dependencies
+coverage
+cypress/videos
+.env
+instrumented/
+node_modules/
+.nyc_output/
+nyc_output
+results/
+run-artifacts
+.yarn/
 
-# Intellij
-.idea
-*.iml
-*.ipr
+# Maven build output
+target/
 
-# Maven
-target
+# Local CI run output
+cypress-result.txt
 
-# Jahia DX Studio
-repository.xml.generated
+# Local tooling
+.claude/
+.vscode/
+
+# OS junk
+.DS_Store
